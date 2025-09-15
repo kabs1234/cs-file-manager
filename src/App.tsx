@@ -1,5 +1,6 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
+import LoginPage from './pages/Login/Login';
 
 export function App(): ReactElement {
-  return <p>hi</p>;
+  return <LoginPage />;
 }
