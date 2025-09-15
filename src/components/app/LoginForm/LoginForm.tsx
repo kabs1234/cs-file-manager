@@ -1,13 +1,13 @@
 import { Button, FormGroup, TextField } from '@mui/material';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useState, type ReactElement } from 'react';
-import { useMutationAction } from '../../hooks/hooks';
-import type { LoginUserQuery, LoginUserResult } from '../../types/types';
-import { useLoginUserMutation } from '../../services/authorizationApi';
+import { useMutationAction } from '../../../hooks/hooks';
+import { useLoginUserMutation } from '../../../services/authorizationApi';
+import type { LoginUserResult, LoginUserQuery } from '../../../types/types';
 
-export default function LoginPage(): ReactElement {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+export default function LoginForm(): ReactElement {
+  const [email, setEmail] = useState<string>('john@mail.com');
+  const [password, setPassword] = useState<string>('changeme');
 
   const onEmailInput = (evt: ChangeEvent<HTMLInputElement>): void => {
     setEmail(evt.currentTarget.value);

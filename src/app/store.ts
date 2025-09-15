@@ -1,8 +1,9 @@
 import type { Action, ThunkAction } from '@reduxjs/toolkit';
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
 import { authorizationApi } from '../services/authorizationApi';
+import { filesSlice } from '../slices/filesSlice/files.slice';
 
-const rootReducer = combineSlices(authorizationApi);
+const rootReducer = combineSlices(filesSlice, authorizationApi);
 export type RootState = ReturnType<typeof rootReducer>;
 
 export const makeStore = (preloadedState?: Partial<RootState>) => {
