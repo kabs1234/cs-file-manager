@@ -1,14 +1,15 @@
 import type { Action, ThunkAction } from '@reduxjs/toolkit';
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
+import { authorizationApi } from '../services/authorizationApi';
 
-const rootReducer = combineSlices();
+const rootReducer = combineSlices(authorizationApi);
 export type RootState = ReturnType<typeof rootReducer>;
 
 export const makeStore = (preloadedState?: Partial<RootState>) => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat();
+      return getDefaultMiddleware().concat(authorizationApi.middleware);
     },
     preloadedState,
   });
