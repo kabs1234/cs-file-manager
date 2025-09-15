@@ -6,7 +6,7 @@ export const useMutationAction = <ResultType, QueryArg>({
   onError,
 }: {
   mutation: MutationType<ResultType, QueryArg>;
-  onSuccess?: () => void;
+  onSuccess?: ((actionResult: ResultType) => void) | (() => void);
   onError?: () => void;
 }): [
   (payload: QueryArg) => Promise<void>,
@@ -16,10 +16,10 @@ export const useMutationAction = <ResultType, QueryArg>({
 
   const tryToExecuteAction = async (payload: QueryArg): Promise<void> => {
     try {
-      await action(payload).unwrap();
+      const data = await action(payload).unwrap();
 
       if (onSuccess) {
-        onSuccess();
+        onSuccess(data);
       }
     } catch (err) {
       if (onError) {

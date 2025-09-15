@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
-import LoginPage from './pages/Login/Login';
+import IndexPage from './pages/Index/Index';
 
 export function App(): ReactElement {
-  return <LoginPage />;
+  return <IndexPage />;
 }
