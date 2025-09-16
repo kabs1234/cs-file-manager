@@ -4,10 +4,12 @@ export const useMutationAction = <ResultType, QueryArg>({
   mutation,
   onSuccess,
   onError,
+  onFinally,
 }: {
   mutation: MutationType<ResultType, QueryArg>;
   onSuccess?: ((actionResult: ResultType) => void) | (() => void);
   onError?: () => void;
+  onFinally?: () => void;
 }): [
   (payload: QueryArg) => Promise<void>,
   MutationResultType<ResultType, QueryArg>,
@@ -18,14 +20,13 @@ export const useMutationAction = <ResultType, QueryArg>({
     try {
       const data = await action(payload).unwrap();
 
-      if (onSuccess) {
-        onSuccess(data);
-      }
+      onSuccess?.(data);
     } catch (err) {
-      if (onError) {
-        onError();
-      }
+      onError?.();
+
       throw err;
+    } finally {
+      onFinally?.();
     }
   };
 
