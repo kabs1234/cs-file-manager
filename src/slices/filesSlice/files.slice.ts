@@ -23,6 +23,9 @@ export const filesSlice = createSlice({
     setAccessToken: (state, action: PayloadAction<string | null>) => {
       state.accessToken = action.payload;
     },
+    resetFiles: (state) => {
+      state.files = [];
+    },
   },
   extraReducers(builder) {
     builder.addMatcher(
@@ -45,4 +48,4 @@ export const filesSlice = createSlice({
   },
 });
 
-export const { setAccessToken } = filesSlice.actions;
+export const { setAccessToken, resetFiles } = filesSlice.actions;
