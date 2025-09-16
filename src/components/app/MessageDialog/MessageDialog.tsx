@@ -1,42 +1,39 @@
 import {
-  Dialog,
-  DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
   Button,
 } from '@mui/material';
 import type { ReactElement } from 'react';
+import CustomDialog from '../../ui/CustomDialog/CustomDialog';
 
 export default function MessageDialog({
   isDialogOpen,
-  onClose,
+  onDialogClose,
   title,
   description,
 }: {
   isDialogOpen: boolean;
-  onClose: () => void;
+  onDialogClose: () => void;
   title: string;
   description: string;
 }): ReactElement {
   return (
-    <Dialog
-      open={isDialogOpen}
-      onClose={onClose}
-      aria-labelledby="message-dialog-title"
-      aria-describedby="message-dialog-description"
+    <CustomDialog
+      title={title}
+      onDialogClose={onDialogClose}
+      isDialogOpen={isDialogOpen}
     >
-      <DialogTitle id="message-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="message-dialog-description">
           {description}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} autoFocus>
+        <Button onClick={onDialogClose} autoFocus>
           OK
         </Button>
       </DialogActions>
-    </Dialog>
+    </CustomDialog>
   );
 }

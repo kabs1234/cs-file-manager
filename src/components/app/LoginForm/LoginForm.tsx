@@ -1,4 +1,4 @@
-import { Button, FormGroup, TextField } from '@mui/material';
+import { Alert, Button, FormGroup, TextField } from '@mui/material';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useState, type ReactElement } from 'react';
 import { useMutationAction } from '../../../hooks/hooks';
@@ -7,6 +7,7 @@ import type {
   LoginUserQueryResult,
   LoginUserQuery,
 } from '../../../types/types';
+import { isFetchBaseQueryError } from '../../../services/helpers';
 
 export default function LoginForm(): ReactElement {
   const [email, setEmail] = useState<string>('john@mail.com');
@@ -20,7 +21,7 @@ export default function LoginForm(): ReactElement {
     setPassword(evt.target.value);
   };
 
-  const [tryToLoginUser] = useMutationAction<
+  const [tryToLoginUser, { isLoading, error }] = useMutationAction<
     LoginUserQueryResult,
     LoginUserQuery
   >({
@@ -36,11 +37,27 @@ export default function LoginForm(): ReactElement {
     });
   };
 
+  const getErrorMessage = (): string => {
+    if (isFetchBaseQueryError(error)) {
+      return error.status === 404
+        ? 'Unexpected error! Try again later.'
+        : 'Wrong password! Try again please.';
+    }
+
+    return 'Error';
+  };
+
   return (
     <>
       <h1>Login Page</h1>
 
       <form onSubmit={onFormSubmit}>
+        {error && (
+          <Alert severity="error" sx={{ marginBottom: '20px' }}>
+            {getErrorMessage()}
+          </Alert>
+        )}
+
         <FormGroup>
           <TextField
             type="email"
@@ -68,7 +85,9 @@ export default function LoginForm(): ReactElement {
             }}
           />
 
-          <Button type="submit">login</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'logging in...' : 'log in'}
+          </Button>
         </FormGroup>
       </form>
     </>
