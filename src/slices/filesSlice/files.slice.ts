@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { File } from 'buffer';
 import { Namespace } from '../../const';
 import { getToken, setToken } from '../../utils/utils';
 import { authorizationApi } from '../../services/authorizationApi';
+import { filesApi } from '../../services/filesApi';
+import type { UploadedFiles } from '../../types/types';
 
 type FileSlice = {
   accessToken: string | null;
-  files: File[];
+  files: UploadedFiles;
 };
 
 const initialState: FileSlice = {
@@ -16,7 +17,7 @@ const initialState: FileSlice = {
 
 export const filesSlice = createSlice({
   initialState,
-  name: Namespace.Files,
+  name: Namespace.FilesSlice,
   reducers: {},
   extraReducers(builder) {
     builder.addMatcher(
@@ -26,6 +27,14 @@ export const filesSlice = createSlice({
 
         state.accessToken = accessToken;
         setToken(accessToken);
+      }
+    );
+    builder.addMatcher(
+      filesApi.endpoints.uploadFile.matchFulfilled,
+      (state, action) => {
+        const newFile = action.payload;
+        const files = state.files;
+        state.files = [...files, newFile];
       }
     );
   },

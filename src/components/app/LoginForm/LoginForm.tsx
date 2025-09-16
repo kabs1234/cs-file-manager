@@ -3,21 +3,27 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { useState, type ReactElement } from 'react';
 import { useMutationAction } from '../../../hooks/hooks';
 import { useLoginUserMutation } from '../../../services/authorizationApi';
-import type { LoginUserResult, LoginUserQuery } from '../../../types/types';
+import type {
+  LoginUserQueryResult,
+  LoginUserQuery,
+} from '../../../types/types';
 
 export default function LoginForm(): ReactElement {
   const [email, setEmail] = useState<string>('john@mail.com');
   const [password, setPassword] = useState<string>('changeme');
 
   const onEmailInput = (evt: ChangeEvent<HTMLInputElement>): void => {
-    setEmail(evt.currentTarget.value);
+    setEmail(evt.target.value);
   };
 
   const onPasswordInput = (evt: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(evt.currentTarget.value);
+    setPassword(evt.target.value);
   };
 
-  const [tryToLoginUser] = useMutationAction<LoginUserResult, LoginUserQuery>({
+  const [tryToLoginUser] = useMutationAction<
+    LoginUserQueryResult,
+    LoginUserQuery
+  >({
     mutation: useLoginUserMutation,
   });
 
