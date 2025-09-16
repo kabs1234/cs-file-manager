@@ -5,12 +5,15 @@ import type { UploadFileQuery, UploadedFile } from '../../../types/types';
 import { useUploadFileMutation } from '../../../services/filesApi';
 import FilesList from '../FilesList/FilesList';
 import Loader from '../../ui/Loader/Loader';
-import MessageDialog from '../../ui/MessageDialog/MessageDialog';
+import MessageDialog from '../MessageDialog/MessageDialog';
+import LogoutDialog from '../LogoutDialog/LogoutDialog';
 
 export default function FileManager(): ReactElement {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [dialogTitle, setDialogTitle] = useState<string>('');
-  const [dialogDescription, setDialogDescription] = useState<string>('');
+  const [isMessageDialogOpen, setIsMessageDialogOpen] =
+    useState<boolean>(false);
+  const [messageDialogTitle, setMessageDialogTitle] = useState<string>('');
+  const [messageDialogDescription, setMessageDialogDescription] =
+    useState<string>('');
 
   const [tryToUploadFile, { isLoading }] = useMutationAction<
     UploadedFile,
@@ -18,19 +21,19 @@ export default function FileManager(): ReactElement {
   >({
     mutation: useUploadFileMutation,
     onSuccess: () => {
-      setDialogTitle('Document uploaded!');
-      setDialogDescription(
+      setMessageDialogTitle('Document uploaded!');
+      setMessageDialogDescription(
         'Document successfully downloaded! The full list of your documents is available on the main page.'
       );
     },
     onError: () => {
-      setDialogTitle('Upload failed!');
-      setDialogDescription(
+      setMessageDialogTitle('Upload failed!');
+      setMessageDialogDescription(
         'An error occurred while uploading the document. Please try again.'
       );
     },
     onFinally: () => {
-      setIsDialogOpen(true);
+      setIsMessageDialogOpen(true);
     },
   });
 
@@ -45,8 +48,8 @@ export default function FileManager(): ReactElement {
     }
   };
 
-  const onAlertClose = (): void => {
-    setIsDialogOpen(false);
+  const onMessageDialogClose = (): void => {
+    setIsMessageDialogOpen(false);
   };
 
   return (
@@ -59,6 +62,8 @@ export default function FileManager(): ReactElement {
       >
         File manager
       </Typography>
+
+      <LogoutDialog />
 
       <Button
         variant="contained"
@@ -74,10 +79,10 @@ export default function FileManager(): ReactElement {
       <FilesList />
 
       <MessageDialog
-        title={dialogTitle}
-        isDialogOpen={isDialogOpen}
-        description={dialogDescription}
-        onClose={onAlertClose}
+        title={messageDialogTitle}
+        isDialogOpen={isMessageDialogOpen}
+        description={messageDialogDescription}
+        onDialogClose={onMessageDialogClose}
       />
 
       {isLoading && <Loader isAction />}

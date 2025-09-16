@@ -55,6 +55,7 @@ const eslintConfig = config(
       'no-undef': [0],
       '@typescript-eslint/consistent-type-definitions': [2, 'type'],
       '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/consistent-type-imports': [
         2,
         {

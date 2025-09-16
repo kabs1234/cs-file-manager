@@ -1,3 +1,4 @@
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { Namespace } from '../../const';
 import { getToken, setToken } from '../../utils/utils';
@@ -18,7 +19,11 @@ const initialState: FileSlice = {
 export const filesSlice = createSlice({
   initialState,
   name: Namespace.FilesSlice,
-  reducers: {},
+  reducers: {
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
+      state.accessToken = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder.addMatcher(
       authorizationApi.endpoints.loginUser.matchFulfilled,
@@ -39,3 +44,5 @@ export const filesSlice = createSlice({
     );
   },
 });
+
+export const { setAccessToken } = filesSlice.actions;
