@@ -1,15 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { BASE_URL, Namespace } from '../const';
-import type { LoginUserQuery, LoginUserQueryResult } from '../types/types';
+import type { UploadFileQuery, UploadedFile } from '../types/types';
 
-export const authorizationApi = createApi({
-  reducerPath: Namespace.AuthorizationAPI,
+export const filesApi = createApi({
+  reducerPath: Namespace.FilesAPI,
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   endpoints: (build) => ({
-    loginUser: build.mutation<LoginUserQueryResult, LoginUserQuery>({
+    uploadFile: build.mutation<UploadedFile, UploadFileQuery>({
       query: (user) => {
         return {
-          url: 'auth/login',
+          url: 'files/upload',
           body: user,
           method: 'POST',
         };
@@ -18,4 +18,4 @@ export const authorizationApi = createApi({
   }),
 });
 
-export const { useLoginUserMutation } = authorizationApi;
+export const { useUploadFileMutation } = filesApi;
