@@ -1,13 +1,37 @@
 import { Button, Typography } from '@mui/material';
-import { type ChangeEvent, type ReactElement } from 'react';
+import { useState, type ChangeEvent, type ReactElement } from 'react';
 import { useMutationAction } from '../../../hooks/hooks';
 import type { UploadFileQuery, UploadedFile } from '../../../types/types';
 import { useUploadFileMutation } from '../../../services/filesApi';
 import FilesList from '../FilesList/FilesList';
+import Loader from '../../ui/Loader/Loader';
+import MessageDialog from '../../ui/MessageDialog/MessageDialog';
 
 export default function FileManager(): ReactElement {
-  const [tryToUploadFile] = useMutationAction<UploadedFile, UploadFileQuery>({
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [dialogTitle, setDialogTitle] = useState<string>('');
+  const [dialogDescription, setDialogDescription] = useState<string>('');
+
+  const [tryToUploadFile, { isLoading }] = useMutationAction<
+    UploadedFile,
+    UploadFileQuery
+  >({
     mutation: useUploadFileMutation,
+    onSuccess: () => {
+      setDialogTitle('Document uploaded!');
+      setDialogDescription(
+        'Document successfully downloaded! The full list of your documents is available on the main page.'
+      );
+    },
+    onError: () => {
+      setDialogTitle('Upload failed!');
+      setDialogDescription(
+        'An error occurred while uploading the document. Please try again.'
+      );
+    },
+    onFinally: () => {
+      setIsDialogOpen(true);
+    },
   });
 
   const onFileUpload = (evt: ChangeEvent<HTMLInputElement>): void => {
@@ -19,6 +43,10 @@ export default function FileManager(): ReactElement {
 
       tryToUploadFile(formData);
     }
+  };
+
+  const onAlertClose = (): void => {
+    setIsDialogOpen(false);
   };
 
   return (
@@ -44,6 +72,15 @@ export default function FileManager(): ReactElement {
       </Button>
 
       <FilesList />
+
+      <MessageDialog
+        title={dialogTitle}
+        isDialogOpen={isDialogOpen}
+        description={dialogDescription}
+        onClose={onAlertClose}
+      />
+
+      {isLoading && <Loader isAction />}
     </>
   );
 }
