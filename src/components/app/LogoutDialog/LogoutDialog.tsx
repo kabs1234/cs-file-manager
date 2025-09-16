@@ -2,7 +2,10 @@ import { DialogActions, Button } from '@mui/material';
 import { useState, type ReactElement } from 'react';
 import CustomDialog from '../../ui/CustomDialog/CustomDialog';
 import { useAppDispatch } from '../../../app/hooks';
-import { setAccessToken } from '../../../slices/filesSlice/files.slice';
+import {
+  resetFiles,
+  setAccessToken,
+} from '../../../slices/filesSlice/files.slice';
 import { removeToken } from '../../../utils/utils';
 
 export default function LogoutDialog(): ReactElement {
@@ -20,6 +23,7 @@ export default function LogoutDialog(): ReactElement {
 
   const onUserLogout = (): void => {
     dispatch(setAccessToken(null));
+    dispatch(resetFiles());
     removeToken();
   };
 
