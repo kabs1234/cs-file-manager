@@ -45,6 +45,8 @@ export default function FileManager(): ReactElement {
       formData.append('file', file);
 
       tryToUploadFile(formData);
+
+      evt.target.value = '';
     }
   };
 
