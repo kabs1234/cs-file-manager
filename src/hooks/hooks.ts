@@ -1,3 +1,4 @@
+import { REQUEST_ABORT_TIMEOUT } from '../const';
 import type { MutationResultType, MutationType } from '../types/types';
 
 export const useMutationAction = <ResultType, QueryArg>({
@@ -7,27 +8,36 @@ export const useMutationAction = <ResultType, QueryArg>({
   onFinally,
 }: {
   mutation: MutationType<ResultType, QueryArg>;
-  onSuccess?: ((actionResult: ResultType) => void) | (() => void);
+  onSuccess?: () => void;
   onError?: () => void;
   onFinally?: () => void;
-}): [
-  (payload: QueryArg) => Promise<void>,
-  MutationResultType<ResultType, QueryArg>,
-] => {
+}): [(payload: QueryArg) => void, MutationResultType<ResultType, QueryArg>] => {
   const [action, actionResult] = mutation();
 
-  const tryToExecuteAction = async (payload: QueryArg): Promise<void> => {
-    try {
-      const data = await action(payload).unwrap();
+  const tryToExecuteAction = (payload: QueryArg): void => {
+    const request = action(payload);
 
-      onSuccess?.(data);
-    } catch (err) {
-      onError?.();
+    const timer = setTimeout(() => {
+      request.abort();
+    }, REQUEST_ABORT_TIMEOUT);
 
-      throw err;
-    } finally {
-      onFinally?.();
-    }
+    request
+      .then((res) => {
+        if ('error' in res) {
+          throw new Error('Aborted');
+        }
+
+        onSuccess?.();
+      })
+      .catch((err: unknown) => {
+        onError?.();
+
+        throw err;
+      })
+      .finally(() => {
+        onFinally?.();
+        clearTimeout(timer);
+      });
   };
 
   return [tryToExecuteAction, actionResult];
